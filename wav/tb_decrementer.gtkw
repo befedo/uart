@@ -1,0 +1,33 @@
+[*]
+[*] GTKWave Analyzer v3.3.89 (w)1999-2018 BSI
+[*] Tue May 15 08:26:47 2018
+[*]
+[dumpfile] "/home/malu-ae/projects/cursed/vunit/rest/vunit_out/test_output/tb_uart_lib.tb_decrementer.default_1b6b3b9008217921fc32bdc9125c6b725026db91/ghdl/wave.ghw"
+[dumpfile_mtime] "Tue May 15 08:25:54 2018"
+[dumpfile_size] 1937
+[savefile] "/home/malu-ae/projects/cursed/vunit/rest/wav/tb_decrementer.gtkw"
+[timestart] 0
+[size] 1680 986
+[pos] -51 -51
+*-37.492378 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] top.
+[treeopen] top.tb_decrementer.
+[treeopen] top.tb_decrementer.dut_decrementer.
+[sst_width] 229
+[signals_width] 134
+[sst_expanded] 1
+[sst_vpaned_height] 275
+@28
+top.tb_decrementer.dut_decrementer.clk
+top.tb_decrementer.dut_decrementer.rst
+top.tb_decrementer.dut_decrementer.load
+@29
+top.tb_decrementer.dut_decrementer.ena
+@24
+#{top.tb_decrementer.dut_decrementer.din[7:0]} top.tb_decrementer.dut_decrementer.din[7] top.tb_decrementer.dut_decrementer.din[6] top.tb_decrementer.dut_decrementer.din[5] top.tb_decrementer.dut_decrementer.din[4] top.tb_decrementer.dut_decrementer.din[3] top.tb_decrementer.dut_decrementer.din[2] top.tb_decrementer.dut_decrementer.din[1] top.tb_decrementer.dut_decrementer.din[0]
+@28
+top.tb_decrementer.dut_decrementer.dec
+@24
+#{top.tb_decrementer.dut_decrementer.sv_din[7:0]} top.tb_decrementer.dut_decrementer.sv_din[7] top.tb_decrementer.dut_decrementer.sv_din[6] top.tb_decrementer.dut_decrementer.sv_din[5] top.tb_decrementer.dut_decrementer.sv_din[4] top.tb_decrementer.dut_decrementer.sv_din[3] top.tb_decrementer.dut_decrementer.sv_din[2] top.tb_decrementer.dut_decrementer.sv_din[1] top.tb_decrementer.dut_decrementer.sv_din[0]
+[pattern_trace] 1
+[pattern_trace] 0

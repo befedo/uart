@@ -1,0 +1,110 @@
+[*]
+[*] GTKWave Analyzer v3.3.89 (w)1999-2018 BSI
+[*] Thu Apr 26 07:09:30 2018
+[*]
+[dumpfile] "/home/malu-ae/projects/cursed/vunit/rest/wav/tb_uart.ghw"
+[dumpfile_mtime] "Thu Apr 26 06:50:19 2018"
+[dumpfile_size] 1169089
+[savefile] "/home/malu-ae/projects/cursed/vunit/rest/wav/tb_uart.gtkw"
+[timestart] 91330000000000
+[size] 1280 960
+[pos] -1 -1
+*-41.537693 102900000000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[sst_width] 51
+[signals_width] 212
+[sst_expanded] 0
+[sst_vpaned_height] 266
+@200
+-Control&IO
+@28
+top.tb_uart.s_clk
+top.tb_uart.s_rst
+top.tb_uart.s_din
+@420
+top.tb_uart.st_act
+@c00420
+top.tb_uart.si_data
+@28
+(0)top.tb_uart.si_data
+(1)top.tb_uart.si_data
+(2)top.tb_uart.si_data
+(3)top.tb_uart.si_data
+(4)top.tb_uart.si_data
+(5)top.tb_uart.si_data
+(6)top.tb_uart.si_data
+(7)top.tb_uart.si_data
+(8)top.tb_uart.si_data
+(9)top.tb_uart.si_data
+(10)top.tb_uart.si_data
+(11)top.tb_uart.si_data
+(12)top.tb_uart.si_data
+(13)top.tb_uart.si_data
+(14)top.tb_uart.si_data
+(15)top.tb_uart.si_data
+(16)top.tb_uart.si_data
+(17)top.tb_uart.si_data
+(18)top.tb_uart.si_data
+(19)top.tb_uart.si_data
+(20)top.tb_uart.si_data
+(21)top.tb_uart.si_data
+(22)top.tb_uart.si_data
+(23)top.tb_uart.si_data
+(24)top.tb_uart.si_data
+(25)top.tb_uart.si_data
+(26)top.tb_uart.si_data
+(27)top.tb_uart.si_data
+(28)top.tb_uart.si_data
+(29)top.tb_uart.si_data
+(30)top.tb_uart.si_data
+(31)top.tb_uart.si_data
+@1401200
+-group_end
+@25
+#{top.tb_uart.dut.sv_dout[8:0]} top.tb_uart.dut.sv_dout[8] top.tb_uart.dut.sv_dout[7] top.tb_uart.dut.sv_dout[6] top.tb_uart.dut.sv_dout[5] top.tb_uart.dut.sv_dout[4] top.tb_uart.dut.sv_dout[3] top.tb_uart.dut.sv_dout[2] top.tb_uart.dut.sv_dout[1] top.tb_uart.dut.sv_dout[0]
+@200
+-Start Condition
+@28
+top.tb_uart.dut.s_start
+@420
+top.tb_uart.dut.st_state
+@200
+-Byte Read Counter
+@28
+top.tb_uart.dut.read_counter.ena
+top.tb_uart.dut.read_counter.clr
+@22
+#{top.tb_uart.dut.read_counter.dout[3:0]} top.tb_uart.dut.read_counter.dout[3] top.tb_uart.dut.read_counter.dout[2] top.tb_uart.dut.read_counter.dout[1] top.tb_uart.dut.read_counter.dout[0]
+@200
+-Baud Counter
+@28
+top.tb_uart.dut.baud_counter.clr
+top.tb_uart.dut.baud_counter.ena
+@24
+#{top.tb_uart.dut.baud_counter.dout[4:0]} top.tb_uart.dut.baud_counter.dout[4] top.tb_uart.dut.baud_counter.dout[3] top.tb_uart.dut.baud_counter.dout[2] top.tb_uart.dut.baud_counter.dout[1] top.tb_uart.dut.baud_counter.dout[0]
+@200
+-Start Counter
+@28
+top.tb_uart.dut.start_counter.ena
+top.tb_uart.dut.start_counter.clr
+@22
+#{top.tb_uart.dut.start_counter.dout[4:0]} top.tb_uart.dut.start_counter.dout[4] top.tb_uart.dut.start_counter.dout[3] top.tb_uart.dut.start_counter.dout[2] top.tb_uart.dut.start_counter.dout[1] top.tb_uart.dut.start_counter.dout[0]
+@200
+-Output
+@c00024
+#{top.tb_uart.dut.dout[7:0]} top.tb_uart.dut.dout[7] top.tb_uart.dut.dout[6] top.tb_uart.dut.dout[5] top.tb_uart.dut.dout[4] top.tb_uart.dut.dout[3] top.tb_uart.dut.dout[2] top.tb_uart.dut.dout[1] top.tb_uart.dut.dout[0]
+@28
+top.tb_uart.dut.dout[7]
+top.tb_uart.dut.dout[6]
+top.tb_uart.dut.dout[5]
+top.tb_uart.dut.dout[4]
+top.tb_uart.dut.dout[3]
+top.tb_uart.dut.dout[2]
+top.tb_uart.dut.dout[1]
+top.tb_uart.dut.dout[0]
+@1401200
+-group_end
+@28
+top.tb_uart.dut.par
+top.tb_uart.dut.valid
+[pattern_trace] 1
+[pattern_trace] 0

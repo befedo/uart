@@ -1,0 +1,19 @@
+# don't track coverage or vunit output
+profile/
+coverage/
+vunit_out/
+
+# neither add ghdl objects
+src/**.cf
+
+# don't track tag-file
+tags
+
+# don't track editor/linter config
+setup.cfg
+*vhdl_ls.toml
+vhdltool-config.yaml
+
+
+# ignore neomakes tmp-files
+*@neomake*

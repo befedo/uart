@@ -1,0 +1,27 @@
+[*]
+[*] GTKWave Analyzer v3.3.89 (w)1999-2018 BSI
+[*] Wed Apr 25 08:37:09 2018
+[*]
+[dumpfile] "/home/malu-ae/projects/cursed/vunit/rest/wav/tb_counter.ghw"
+[dumpfile_mtime] "Wed Apr 25 08:35:53 2018"
+[dumpfile_size] 4603
+[savefile] "/home/malu-ae/projects/cursed/vunit/rest/wav/tb_counter.gtkw"
+[timestart] 0
+[size] 1280 960
+[pos] -1 -1
+*-39.823853 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[sst_width] 51
+[signals_width] 102
+[sst_expanded] 0
+[sst_vpaned_height] 266
+@28
+top.tb_counter.clk
+top.tb_counter.ena
+top.tb_counter.rst
+top.tb_counter.dut_rest.rst_o
+@29
+top.tb_counter.clr_o
+@24
+#{top.tb_counter.dut_counter.dout[6:0]} top.tb_counter.dut_counter.dout[6] top.tb_counter.dut_counter.dout[5] top.tb_counter.dut_counter.dout[4] top.tb_counter.dut_counter.dout[3] top.tb_counter.dut_counter.dout[2] top.tb_counter.dut_counter.dout[1] top.tb_counter.dut_counter.dout[0]
+[pattern_trace] 1
+[pattern_trace] 0

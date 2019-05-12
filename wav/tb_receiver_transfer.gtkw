@@ -1,0 +1,32 @@
+[*]
+[*] GTKWave Analyzer v3.3.89 (w)1999-2018 BSI
+[*] Mon May  7 06:15:00 2018
+[*]
+[dumpfile] "/home/malu-ae/projects/cursed/vunit/rest/vunit_out/test_output/tb_uart_lib.tb_receiver.odd_parity.transfer.single_83a93ff11e320724e23dd1ffaff15cd643da6265/ghdl/wave.ghw"
+[dumpfile_mtime] "Mon May  7 06:12:03 2018"
+[dumpfile_size] 25448
+[savefile] "/home/malu-ae/projects/cursed/vunit/rest/wav/tb_receiver_transfer.gtkw"
+[timestart] 0
+[size] 1680 986
+[pos] -51 -51
+*-31.599325 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] top.
+[treeopen] top.tb_receiver.
+[sst_width] 229
+[signals_width] 94
+[sst_expanded] 1
+[sst_vpaned_height] 275
+@28
+top.tb_receiver.dut.clk
+top.tb_receiver.dut.rst
+top.tb_receiver.dut.din
+@421
+top.tb_receiver.si_data
+@420
+top.tb_receiver.st_act
+top.tb_receiver.dut.st_state
+@28
+top.tb_receiver.dut.valid
+top.tb_receiver.dut.par
+[pattern_trace] 1
+[pattern_trace] 0

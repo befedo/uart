@@ -1,0 +1,24 @@
+[*]
+[*] GTKWave Analyzer v3.3.89 (w)1999-2018 BSI
+[*] Mon Apr 23 09:52:21 2018
+[*]
+[dumpfile] "/home/malu-ae/projects/cursed/vunit/rest/wav/tb_rest.ghw"
+[dumpfile_mtime] "Mon Apr 23 09:51:28 2018"
+[dumpfile_size] 2509
+[savefile] "/home/malu-ae/projects/cursed/vunit/rest/wav/tb_rest.gtkw"
+[timestart] 0
+[size] 1280 960
+[pos] -1 -1
+*-39.275681 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[sst_width] 51
+[signals_width] 78
+[sst_expanded] 0
+[sst_vpaned_height] 266
+@28
+top.tb_rest.clk
+top.tb_rest.ena
+top.tb_rest.rst
+@29
+top.tb_rest.dut.rst_o
+[pattern_trace] 1
+[pattern_trace] 0
