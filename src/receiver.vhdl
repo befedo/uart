@@ -113,45 +113,53 @@ begin
     end case;
   end process transition;
   --
-  output : process (s_par, sv_dout, st_state) is
+  output : process (clk, rst) is
   begin
-    -- Default assignments for all used counters.
-    s_enable_read <= '0'; s_load_read <= '0'; sv_din_read <= (others => '0');
-    s_enable_baud <= '0'; s_load_baud <= '0'; sv_din_baud <= (others => '0');
-    -- Default assignments for all given outputs.
-    par   <= '0';
-    valid <= '0';
-    dout  <= (others => '0');
-    --
-    case st_state is
-      when clr_idle  => s_load_baud   <= '1';
-                        sv_din_baud   <= to_unsigned(c_start_length - 4, sv_din_baud'length);
+    if rst = '1' then
+      -- Default assignments for all used counters.
+      s_enable_read <= '0'; s_load_read <= '0'; sv_din_read <= (others => '0');
+      s_enable_baud <= '0'; s_load_baud <= '0'; sv_din_baud <= (others => '0');
+      -- Default assignments for the controll path output.
+      valid <= '0';
+    elsif clk'event and clk = '1' then
+      -- Default assignments for all used counters.
+      s_enable_read <= '0'; s_load_read <= '0'; sv_din_read <= (others => '0');
+      s_enable_baud <= '0'; s_load_baud <= '0'; sv_din_baud <= (others => '0');
+      -- Default assignments for all given outputs.
+      par   <= '0';
+      valid <= '0';
+      dout  <= (others => '0');
       --
-      when start     => s_enable_baud <= '1';
+      case st_next_state is
+        when clr_idle  => s_load_baud   <= '1';
+                          sv_din_baud   <= to_unsigned(c_start_length - 4, sv_din_baud'length);
+        --
+        when start     => s_enable_baud <= '1';
+        --
+        when clr_start => s_load_read   <= '1';
+                          s_load_baud   <= '1';
+                          sv_din_read   <= to_unsigned(c_data_length - 1, sv_din_read'length);
+                          sv_din_baud   <= to_unsigned(c_baud_length - 4, sv_din_baud'length);
+        --
+        when sleep     => s_enable_baud <= '1';
+        --
+        when clr_sleep => s_load_baud   <= '1';
+                          sv_din_baud   <= to_unsigned(c_baud_length - 4, sv_din_baud'length);
+        --
+        when read      => s_enable_read <= '1';
+        --
+        -- NOTE: 's_par' and 'sv_dout' are registered signals, so we don't need a new state depending on them.
+        when stop      => par   <= s_par;
+                          valid <= '1';
+                          gen_dout : case g_parity is
+                            when none   => dout <= sv_dout(sv_dout'left downto sv_dout'right + 1);
+                            when others => dout <= sv_dout(sv_dout'left downto sv_dout'right + 2);
+                          end case gen_dout;
+        --
+        when others    => null;
       --
-      when clr_start => s_load_read   <= '1';
-                        s_load_baud   <= '1';
-                        sv_din_read   <= to_unsigned(c_data_length - 1, sv_din_read'length);
-                        sv_din_baud   <= to_unsigned(c_baud_length - 4, sv_din_baud'length);
-      --
-      when sleep     => s_enable_baud <= '1';
-      --
-      when clr_sleep => s_load_baud   <= '1';
-                        sv_din_baud   <= to_unsigned(c_baud_length - 4, sv_din_baud'length);
-      --
-      when read      => s_enable_read <= '1';
-      --
-      -- NOTE: 's_par' and 'sv_dout' are registered signals, so we don't need a new state depending on them.
-      when stop      => par   <= s_par;
-                        valid <= '1';
-                        gen_dout : case g_parity is
-                          when none   => dout <= sv_dout(sv_dout'left downto sv_dout'right + 1);
-                          when others => dout <= sv_dout(sv_dout'left downto sv_dout'right + 2);
-                        end case gen_dout;
-      --
-      when others    => null;
-    --
-    end case;
+      end case;
+    end if;
   end process output;
   -- }}}
   --
