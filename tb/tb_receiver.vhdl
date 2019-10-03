@@ -79,13 +79,16 @@ begin
     sb_enable_tx <= true;
     --
     if run("check.valid.on.start") then
-      wait until s_valid = '1' for 1 ms;
+      do_rst(c_ns_clock_period, s_rst);
+      wait until s_valid'event for 20 * c_ns_clock_period * 1 ns;
       check(s_valid = '0', "Sanity check for 'valid' on startup.");
     elsif run("check.par.on.start") then
-      wait until s_par = '1' for 1 ms;
+      do_rst(c_ns_clock_period, s_rst);
+      wait until s_par'event for 20 * c_ns_clock_period * 1 ns;
       check(s_par = '0' or s_par = '-', "Sanity check for 'par' on startup.");
     elsif run("check.dout.on.start") then
-      wait until s_valid'event and s_valid = '1' for 1 ms;
+      do_rst(c_ns_clock_period, s_rst);
+      wait until sv_dout'event for 20 * c_ns_clock_period * 1 ns;
       check_equal(sv_dout, 0, "Sanity check for 'dout' on startup.");
     elsif run("transfer.single") then
       do_rst(c_ns_clock_period, s_rst);

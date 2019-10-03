@@ -58,7 +58,9 @@ def set_up_vunit():
     except SystemExit as exc:
         all_ok = exc.code == 0
 
-    if all_ok:
+    #  if all_ok:
+    # FIXME: lcov versions differ (expected 8.3 got 9.1)
+    if False:
         for info_file in glob.glob(r'./*.gcno'):
             shutil.move(info_file, os.path.join('./profile', info_file))
 
