@@ -38,7 +38,7 @@ architecture dec of receiver is
   constant c_baud_length  : positive := 10**9 / (g_ns_clock_period * g_bits_per_second);
   constant c_start_length : positive := 15*10**8 / (g_ns_clock_period * g_bits_per_second);
   -- States for our State-Machine.
-  type   t_state is (idle, clr_idle, start, clr_start, sleep, clr_sleep, read, clr_read, stop);
+  type   t_state is (idle, start, sleep, read, check_stop, stop);
   signal st_state, st_next_state : t_state;
   -- Parity and Start signals, used by the State-Machine.
   signal s_par, s_start                     : std_ulogic;
@@ -57,6 +57,7 @@ begin
     report   "Baud length is to short for state counter."
     severity Error;
   -- }}}
+  --
   -- This is a three Process Description of our State-Machine, which is controled by the three counters 'below'. {{{
   states : process (clk, rst) is
   begin
@@ -76,39 +77,33 @@ begin
     st_next_state <= idle;
     --
     case st_state is
-      when idle      => if s_start = '1' then
-                          st_next_state <= clr_idle;
-                        end if;
+      when idle       => if s_start = '1' then
+                           st_next_state <= start;
+                         end if;
       --
-      when clr_idle  => st_next_state <= start;
+      when start      => if s_baud = '1' then
+                           st_next_state <= start;
+                         else
+                           st_next_state <= read;
+                         end if;
       --
-      when start     => if s_baud = '1' then
-                          st_next_state <= start;
-                        else
-                          st_next_state <= clr_start;
-                        end if;
+      when sleep      => if s_baud = '1' then
+                           st_next_state <= sleep;
+                         else
+                           st_next_state <= read;
+                         end if;
       --
-      when clr_start => st_next_state <= read;
-      --
-      when sleep     => if s_baud = '1' then
+      when read       => if s_read = '1' then
                           st_next_state <= sleep;
-                        else
-                          st_next_state <= clr_sleep;
-                        end if;
+                         else
+                           st_next_state <= check_stop;
+                         end if;
       --
-      when clr_sleep => st_next_state <= read;
+      when check_stop => if sv_dout(sv_dout'right) = '1' then
+                           st_next_state <= stop;
+                         end if;
       --
-      when read      => if s_read = '1' then
-                          st_next_state <= sleep;
-                        else
-                          st_next_state <= clr_read;
-                        end if;
-      --
-      when clr_read  => if sv_dout(sv_dout'right) = '1' then
-                          st_next_state <= stop;
-                        end if;
-      --
-      when others    => null;
+      when others     => null;
     --
     end case;
   end process transition;
@@ -131,22 +126,24 @@ begin
       dout  <= (others => '0');
       --
       case st_next_state is
-        when clr_idle  => s_load_baud   <= '1';
-                          sv_din_baud   <= to_unsigned(c_start_length - 4, sv_din_baud'length);
-        --
-        when start     => s_enable_baud <= '1';
-        --
-        when clr_start => s_load_read   <= '1';
-                          s_load_baud   <= '1';
-                          sv_din_read   <= to_unsigned(c_data_length - 1, sv_din_read'length);
-                          sv_din_baud   <= to_unsigned(c_baud_length - 4, sv_din_baud'length);
+        when start     => if st_state = start then
+                            s_enable_baud <= '1';
+                            s_load_read   <= '1';
+                            sv_din_read   <= to_unsigned(c_data_length - 1, sv_din_read'length);
+                          elsif st_state = idle then
+                            s_load_baud   <= '1';
+                            sv_din_baud   <= to_unsigned(c_start_length - 3, sv_din_baud'length);
+                          end if;
         --
         when sleep     => s_enable_baud <= '1';
         --
-        when clr_sleep => s_load_baud   <= '1';
-                          sv_din_baud   <= to_unsigned(c_baud_length - 4, sv_din_baud'length);
-        --
         when read      => s_enable_read <= '1';
+                          if st_state = start or st_state = sleep then
+                            -- s_load_read   <= '1';
+                            s_load_baud   <= '1';
+                            -- sv_din_read   <= to_unsigned(c_data_length - 1, sv_din_read'length);
+                            sv_din_baud   <= to_unsigned(c_baud_length - 3, sv_din_baud'length);
+                          end if;
         --
         -- NOTE: 's_par' and 'sv_dout' are registered signals, so we don't need a new state depending on them.
         when stop      => par   <= s_par;
