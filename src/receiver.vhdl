@@ -58,7 +58,7 @@ begin
     severity Error;
   -- }}}
 
-  -- This is a three Process Description of our State-Machine, which is controled by the three counters 'below'. {{{
+  -- This is a three Process Description of our State-Machine, which is controlled by the three counters 'below'. {{{
   states : process (clk, rst) is
   begin
     if rst = '1' then
