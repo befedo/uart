@@ -14,10 +14,8 @@ tags
 
 # don't track editor/linter config
 setup.cfg
-hdl-prj.json
 *vhdl_ls.toml
 vhdltool-config.yaml
-
 
 # ignore neomakes tmp-files
 *@neomake*

@@ -1,0 +1,25 @@
+{
+  "options": {
+    "ghdl_analysis": [
+      "--std=08",
+      "-Pvunit_out/ghdl/libraries/osvvm",
+      "-Pvunit_out/ghdl/libraries/vunit_lib",
+      "-Pvunit_out/ghdl/libraries/uart_lib",
+      "-Pvunit_out/ghdl/libraries/tb_uart_lib"
+    ]
+  },
+  "files" : [
+    { "file" : "src/counter.vhdl", "language" : "vhdl" },
+    { "file" : "src/decrementer.vhdl", "language" : "vhdl" },
+    { "file" : "src/receiver.vhdl", "language" : "vhdl" },
+    { "file" : "src/rest.vhdl", "language" : "vhdl" },
+    { "file" : "src/transmitter.vhdl", "language" : "vhdl" },
+    { "file" : "src/uart_pkg.vhdl", "language" : "vhdl" },
+    { "file" : "src/uart.vhdl", "language" : "vhdl" },
+    { "file" : "tb/tb_counter.vhdl", "language" : "vhdl" },
+    { "file" : "tb/tb_decrementer.vhdl", "language" : "vhdl" },
+    { "file" : "tb/tb_receiver.vhdl", "language" : "vhdl" },
+    { "file" : "tb/tb_rest.vhdl", "language" : "vhdl" },
+    { "file" : "tb/tb_transmitter.vhdl", "language" : "vhdl" }
+  ]
+}
