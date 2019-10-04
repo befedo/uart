@@ -15,13 +15,13 @@ architecture bench of tb_decrementer is
   signal clk, rst, ena, dec, load : std_ulogic := '0';
   signal din : unsigned (7 downto 0) := to_unsigned(16, 8);
 begin
-  --
+
   clk <= not clk after 20 us;
-  --
+
   main : process
   begin
     test_runner_setup(runner, runner_cfg);
-    --
+
     while test_suite loop
       reset_checker_stat;
       if run("default") then
@@ -40,11 +40,11 @@ begin
         wait for 1000 us;
       end if;
     end loop;
-    --
+
     test_runner_cleanup(runner);
     wait;
   end process main;
-  --
+
   dut_decrementer : entity uart_lib.decrementer
     generic map ( g_length => 8 )
     port map ( clk  => clk

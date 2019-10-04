@@ -32,7 +32,7 @@ begin
       end if;
     end if;
   end process reg;
-  --
+
   dec   <= not sv_din(sv_din'high);
   s_dec <= not sv_din(sv_din'high);
 end rtl;

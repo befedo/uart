@@ -32,7 +32,7 @@ begin
       end if;
     end if;
   end process count;
-  --
+
   dout <= value;
 end architecture rtl;
 

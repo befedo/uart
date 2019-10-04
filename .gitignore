@@ -3,6 +3,9 @@ profile/
 coverage/
 vunit_out/
 
+# also we don't need lcov's output
+*.gcno
+
 # neither add ghdl objects
 src/**.cf
 
@@ -11,6 +14,7 @@ tags
 
 # don't track editor/linter config
 setup.cfg
+hdl-prj.json
 *vhdl_ls.toml
 vhdltool-config.yaml
 

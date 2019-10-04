@@ -16,7 +16,7 @@ library uart_lib;
 -- Possible Bitrates which should be supported.
 --   Bitrate   Duration
 --     [s⁻¹]       [µs]
--- ----------------------
+
 --        50  20.000,00
 --       110   9.090,00
 --       150   6.670,00
@@ -32,7 +32,7 @@ library uart_lib;
 --   230.400       4,34
 --   460.800       2,17
 --   500.000       2,00
--- ----------------------
+
 
 entity tb_receiver is
   generic ( runner_cfg              : string
@@ -44,20 +44,20 @@ entity tb_receiver is
 end entity tb_receiver;
 
 architecture bench of tb_receiver is
-  --
+
   constant c_parity            : t_parity                                     :=           decode_parity(encoded_parity);
   constant c_data_bits         : positive                                     :=       positive'value(encoded_data_bits);
   constant c_ns_clock_period   : positive                                     := positive'value(encoded_ns_clock_period);
   constant c_bits_per_second   : positive                                     := positive'value(encoded_bits_per_second);
   constant c_duration          : time                                         :=        (10**9/c_bits_per_second) * 1 ns;
-  --
+
   signal st_act                : t_act                                        :=                                    idle;
   signal sb_enable_tx          : boolean                                      :=                                   false;
   signal si_data, si_value     : integer                                      :=                      2**c_data_bits - 1;
   signal s_rst, s_din          : std_ulogic                                   :=                                     '1';
   signal s_clk, s_valid, s_par : std_ulogic                                   :=                                     '0';
   signal sv_dout               : std_ulogic_vector (c_data_bits - 1 downto 0) :=                         (others => '0');
-  --
+
   shared variable rand_gen     : RandomPType;
 begin
   -- Here we generate the System-Clock for this Test-Bench, guarded by another STOP-Condition.
@@ -77,7 +77,7 @@ begin
     show(get_logger(default_checker), display_handler, pass);
     -- Enable Transmission block.
     sb_enable_tx <= true;
-    --
+
     if run("check.valid.on.start") then
       do_rst(c_ns_clock_period, s_rst);
       wait until s_valid'event for 20 * c_ns_clock_period * 1 ns;
@@ -107,14 +107,14 @@ begin
         wait for c_duration;
       end loop;
     end if;
-    --
+
     wait for (10*c_ns_clock_period/2) * 1 ns;
     test_runner_cleanup(runner);
     wait;
   end process main;
-  --
+
   test_runner_watchdog(runner, 200 ms);
-  --
+
   dut : entity uart_lib.receiver (dec)
     generic map (g_data_bits => c_data_bits, g_ns_clock_period => c_ns_clock_period, g_bits_per_second => c_bits_per_second, g_parity => c_parity)
     port map (clk => s_clk, rst => s_rst, din => s_din, dout => sv_dout, par => s_par, valid => s_valid);

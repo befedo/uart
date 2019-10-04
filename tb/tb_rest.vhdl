@@ -19,7 +19,7 @@ begin
   main : process
   begin
     test_runner_setup(runner, runner_cfg);
-    --
+
     while test_suite loop
       reset_checker_stat;
       if run("short_reset_glitch") then
@@ -52,7 +52,7 @@ begin
         stp <= '1';
       end if;
     end loop;
-    --
+
     test_runner_cleanup(runner);
     wait;
   end process main;

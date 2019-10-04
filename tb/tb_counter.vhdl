@@ -13,13 +13,13 @@ end entity tb_counter;
 architecture bench of tb_counter is
   signal clk, clk_o, ena, ena_o, clr_o, rst, rst_o, stp : std_ulogic;
 begin
-  --
+
   clk <= not clk after 20 us when stp = '0' else '0';
-  --
+
   main : process
   begin
     test_runner_setup(runner, runner_cfg);
-    --
+
     while test_suite loop
       reset_checker_stat;
       if run("default") then
@@ -49,11 +49,11 @@ begin
         stp <= '1';
       end if;
     end loop;
-    --
+
     test_runner_cleanup(runner);
     wait;
   end process main;
-  --
+
   dut_rest : entity uart_lib.rest
     port map ( clk     => clk
              , ena     => ena
@@ -63,7 +63,7 @@ begin
              , rst_o   => rst_o
              , rst_n_o => open
             );
-  --
+
   dut_counter : entity uart_lib.counter
     generic map ( g_length => 8 )
     port map ( clk  => clk_o

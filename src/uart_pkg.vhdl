@@ -35,7 +35,7 @@ library ieee;
 library uart_lib;
 
 package body receiver_utils is
-  --
+
   procedure do_rst (constant ns_period : in positive; signal rst : inout std_ulogic) is
   begin
     rst <= '1';
@@ -43,7 +43,7 @@ package body receiver_utils is
     rst <= '0';
     wait for (10*ns_period/2) * 1 ns;
   end procedure do_rst;
-  --
+
   procedure do_tx ( constant value  : in  integer
                   ; constant delay  : in  time
                   ; constant bitnum : in  integer
@@ -101,7 +101,7 @@ package body receiver_utils is
         end if;
       end loop;
     end if;
-    --
+
     case parity is
       when odd    => return sum mod 2 = 1;
       when even   => return sum mod 2 = 0;
