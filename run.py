@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-
 import os
 import glob
 import shutil
@@ -23,12 +22,12 @@ def set_up_vunit():
 
     uart_lib = ui.add_library('uart_lib')
     uart_lib.add_source_files(os.path.join(src_path, '*.vhdl'))
-    uart_lib.add_compile_option('ghdl.flags', ['-fprofile-arcs', '-fprofile-dir=./profile', '-ftest-coverage'])
+    #  uart_lib.add_compile_option('ghdl.flags', ['-fprofile-arcs', '-fprofile-dir=./profile', '-ftest-coverage'])
 
     tb_uart_lib = ui.add_library('tb_uart_lib')
     tb_uart_lib.add_source_files(os.path.join(tb_path, '*.vhdl'))
-    tb_uart_lib.add_compile_option('ghdl.flags', ['-fprofile-arcs', '-fprofile-dir=./profile', '-ftest-coverage'])
-    tb_uart_lib.set_sim_option('ghdl.elab_flags', ['-Wl,-lgcov'])
+    #  tb_uart_lib.add_compile_option('ghdl.flags', ['-fprofile-arcs', '-fprofile-dir=./profile', '-ftest-coverage'])
+    #  tb_uart_lib.set_sim_option('ghdl.elab_flags', ['-Wl,-lgcov'])
 
     tb_receiver = tb_uart_lib.entity('tb_receiver')
 
