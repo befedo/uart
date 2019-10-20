@@ -16,7 +16,7 @@ begin
   -- Generate the clock signal, stop this when the testbench finishes.
   clk <= not clk after 20 us when stp = '0' else '0';
   -- Simple proces to generate the reset line and signal stop at the end.
-  main : process
+  tests : process
   begin
     test_runner_setup(runner, runner_cfg);
 
@@ -55,7 +55,7 @@ begin
 
     test_runner_cleanup(runner);
     wait;
-  end process main;
+  end process tests;
 
   dut : entity uart_lib.rest
     port map ( clk     => clk

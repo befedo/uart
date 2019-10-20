@@ -4,7 +4,6 @@ library ieee;
   use ieee.math_real.log2;
   use ieee.math_real.ceil;
 
-library uart_lib;
 
 entity counter is
   generic ( g_length : positive := 8
@@ -16,6 +15,7 @@ entity counter is
        ; dout : out unsigned (g_length - 1 downto 0)
       );
 end entity counter;
+
 
 architecture rtl of counter is
   signal value : unsigned (dout'range);

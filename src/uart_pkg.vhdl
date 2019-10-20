@@ -2,7 +2,6 @@ library ieee;
   use ieee.numeric_std.all;
   use ieee.std_logic_1164.all;
 
-library uart_lib;
 
 package receiver_utils is
   -- 't_act' is used in the receiver testbench to define the senders state.
@@ -32,7 +31,6 @@ library ieee;
   use ieee.numeric_std.all;
   use ieee.std_logic_1164.all;
 
-library uart_lib;
 
 package body receiver_utils is
 

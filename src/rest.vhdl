@@ -1,7 +1,6 @@
 library ieee;
   use ieee.std_logic_1164.all;
 
-library uart_lib;
 
 entity rest is
   generic ( g_max_delay       : string := "400 ps"
@@ -16,6 +15,7 @@ entity rest is
        ; rst_n_o : out std_ulogic
       );
 end entity rest;
+
 
 architecture tran of rest is
   attribute maxdelay : string;

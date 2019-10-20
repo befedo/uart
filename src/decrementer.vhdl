@@ -2,6 +2,7 @@ library ieee;
   use ieee.std_logic_1164.all;
   use ieee.numeric_std.all;
 
+
 entity decrementer is
   generic (
     g_length : positive := 8
@@ -11,14 +12,15 @@ entity decrementer is
     rst  : in  std_ulogic;
     ena  : in  std_ulogic;
     load : in  std_ulogic;
-    din  : in  unsigned(g_length - 1 downto 0);
+    din  : in  unsigned (g_length - 1 downto 0);
     dec  : out std_ulogic
   );
 end entity decrementer;
 
+
 architecture rtl of decrementer is
   signal s_dec  : std_ulogic;
-  signal sv_din : unsigned(din'high + 1 downto din'low);
+  signal sv_din : unsigned (din'high + 1 downto din'low);
 begin
   reg : process (clk, rst) is
   begin
@@ -36,3 +38,4 @@ begin
   dec   <= not sv_din(sv_din'high);
   s_dec <= not sv_din(sv_din'high);
 end rtl;
+
