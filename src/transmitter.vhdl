@@ -14,12 +14,9 @@ entity transmitter is
           ; g_bits_per_second : positive := 500000
           ; g_parity          : t_parity :=   even
          );
-  port ( clk  : in  std_ulogic
-       ; rst  : in  std_ulogic
-       ; ena  : in  std_ulogic
-       ; din  : in  std_ulogic_vector (g_data_bits - 1 downto 0)
-       ; busy : out std_ulogic
-       ; dout : out std_ulogic
+  port ( clk_i, rst_i, ena_i : in  std_ulogic
+       ; data_i              : in  std_ulogic_vector (g_data_bits - 1 downto 0)
+       ; busy_o, tx_o        : out std_ulogic
       );
 end entity transmitter;
 
@@ -49,27 +46,27 @@ architecture rtl of transmitter is
 begin
 
   gen_parity : case g_parity generate
-    when odd    => sv_din <= din & not (xor din);
-    when even   => sv_din <= din & xor din;
-    when others => sv_din <= din;
+    when odd    => sv_din <= data_i & not (xor data_i);
+    when even   => sv_din <= data_i & xor data_i;
+    when others => sv_din <= data_i;
   end generate gen_parity;
 
   -- State-Machine ... TODO: Add description. {{{
-  states : process (clk, rst) is
+  states : process (clk_i, rst_i) is
   begin
-    if rst then
+    if rst_i then
       st_state <= idle;
-    elsif clk'event and clk = '1' then
+    elsif clk_i'event and clk_i = '1' then
       st_state <= st_next_state;
     end if;
   end process states;
 
-  transition : process (ena, s_baud, s_write, st_state) is
+  transition : process (ena_i, s_baud, s_write, st_state) is
   begin
     st_next_state <= idle;
 
     case st_state is
-      when idle      => if ena then
+      when idle      => if ena_i then
                           st_next_state <= start;
                         end if;
 
@@ -98,28 +95,26 @@ begin
     end case;
   end process transition;
 
-  output : process (clk) is
+  output : process (clk_i) is
   begin
-    if clk'event and clk = '1' then
+    if clk_i'event and clk_i = '1' then
       -- Default assignments for all used counters.
-      s_enable_baud <= '0'; s_load_baud <= '0'; sv_din_baud <= (others => '0');
-      s_enable_write <= '0'; s_load_write <= '0'; sv_din_write <= (others => '0');
+      s_enable_baud <= '0'; s_load_baud <= '0'; sv_din_baud <= to_unsigned(c_baud_length - 3, sv_din_baud'length);
+      s_enable_write <= '0'; s_load_write <= '0'; sv_din_write <= to_unsigned(c_data_length - 1, sv_din_write'length);
       -- Default assignments for all given registers and outputs.
-      busy <= '1'; sv_din_t <= sv_din_t; dout <= sv_din_t(sv_din_t'high);
+      busy_o <= '1'; sv_din_t <= sv_din_t; tx_o <= sv_din_t(sv_din_t'high);
 
       case st_next_state is
-        when idle   => dout <= '1';
-                       busy <= '0';
+        when idle   => tx_o <= '1';
+                       busy_o <= '0';
+                       s_load_baud   <= '1';
 
-        when start  => dout <= '0';
-                       if st_state = start then
-                         s_enable_baud <= '1';
-                         s_load_write  <= '1';
-                         sv_din_write  <= to_unsigned(c_data_length - 1, sv_din_write'length);
-                       elsif st_state = idle then
+        when start  => tx_o <= '0';
+                       s_enable_baud <= '1';
+                       if st_state = idle then
                          sv_din_t      <= sv_din;
+                         s_load_write  <= '1';
                          s_load_baud   <= '1';
-                         sv_din_baud   <= to_unsigned(c_baud_length - 3, sv_din_baud'length);
                        end if;
 
         when sleep  => s_enable_baud <= '1';
@@ -130,10 +125,9 @@ begin
                            sv_din_t <= sv_din_t sll 1;
                          end if;
                          s_load_baud   <= '1';
-                         sv_din_baud   <= to_unsigned(c_baud_length - 3, sv_din_baud'length);
                        end if;
 
-        when stop   => dout <= '1';
+        when stop   => tx_o <= '1';
                        s_enable_baud <= '1';
 
         when others => null;
@@ -146,11 +140,11 @@ begin
   -- Those 'Counters' build the Time-Base for our State-Machine. {{{
   baud_decrementer : entity uart_lib.decrementer
     generic map (g_length => sv_din_baud'length)
-    port map (clk => clk, rst => rst, ena => s_enable_baud, load => s_load_baud, din => sv_din_baud, dec => s_baud);
+    port map (clk => clk_i, rst => rst_i, ena => s_enable_baud, load => s_load_baud, din => sv_din_baud, dec => s_baud);
 
   write_decrementer : entity uart_lib.decrementer
     generic map (g_length => sv_din_write'length)
-    port map (clk => clk, rst => rst, ena => s_enable_write, load => s_load_write, din => sv_din_write, dec => s_write);
+    port map (clk => clk_i, rst => rst_i, ena => s_enable_write, load => s_load_write, din => sv_din_write, dec => s_write);
   -- }}}
 
 end architecture rtl;

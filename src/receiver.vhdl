@@ -14,12 +14,9 @@ entity receiver is
           ; g_bits_per_second : positive := 500000
           ; g_parity          : t_parity :=   even
          );
-  port ( clk   : in  std_ulogic
-       ; rst   : in  std_ulogic
-       ; din   : in  std_ulogic
-       ; par   : out std_ulogic
-       ; valid : out std_ulogic
-       ; dout  : out std_ulogic_vector (g_data_bits - 1 downto 0)
+  port ( clk_i, rst_i, rx_i   : in  std_ulogic
+       ; par_o, valid_o       : out std_ulogic
+       ; data_o               : out std_ulogic_vector (g_data_bits - 1 downto 0)
       );
 end entity receiver;
 
@@ -58,16 +55,16 @@ begin
   -- }}}
 
   -- This is a three Process Description of our State-Machine, which is controlled by the three counters 'below'. {{{
-  states : process (clk, rst) is
+  states : process (clk_i, rst_i) is
   begin
-    if rst then
+    if rst_i then
       st_state <= idle;
       s_start  <= '0';
       sv_din   <= (others => '1'); -- When the bus is inactive TX remains '1', thus we initialize our input registers with '1'.
-    elsif clk'event and clk = '1' then
+    elsif clk_i'event and clk_i = '1' then
       st_state <= st_next_state;
       s_start  <= sv_din(sv_din'left) and not sv_din(sv_din'left - 1);
-      sv_din   <= sv_din(sv_din'left - 1 downto sv_din'right) & din;
+      sv_din   <= sv_din(sv_din'left - 1 downto sv_din'right) & rx_i;
     end if;
   end process states;
 
@@ -107,20 +104,19 @@ begin
     end case;
   end process transition;
 
-  output : process (clk) is
+  output : process (clk_i) is
   begin
-    if clk'event and clk = '1' then
+    if clk_i'event and clk_i = '1' then
       -- Default assignments for all used counters.
-      s_enable_read <= '0'; s_load_read <= '0'; sv_din_read <= (others => '0');
-      s_enable_baud <= '0'; s_load_baud <= '0'; sv_din_baud <= (others => '0');
+      s_enable_read <= '0'; s_load_read <= '0'; sv_din_read <= to_unsigned(c_data_length - 1, sv_din_read'length);
+      s_enable_baud <= '0'; s_load_baud <= '0'; sv_din_baud <= to_unsigned(c_baud_length - 3, sv_din_baud'length);
       -- Default assignments for all given outputs.
-      par <= '0'; valid <= '0'; sv_dout <= sv_dout; dout <= (others => '0');
+      par_o <= '0'; valid_o <= '0'; sv_dout <= sv_dout; data_o <= (others => '0');
 
       case st_next_state is
         when start  => if st_state = start then
                          s_enable_baud <= '1';
                          s_load_read   <= '1';
-                         sv_din_read   <= to_unsigned(c_data_length - 1, sv_din_read'length);
                        elsif st_state = idle then
                          s_load_baud   <= '1';
                          sv_din_baud   <= to_unsigned(c_start_length - 3, sv_din_baud'length);
@@ -131,15 +127,14 @@ begin
         when read   => s_enable_read <= '1';
                        if st_state = start or st_state = sleep then
                          s_load_baud   <= '1';
-                         sv_din_baud   <= to_unsigned(c_baud_length - 3, sv_din_baud'length);
                          sv_dout       <= sv_dout(sv_dout'left - 1 downto sv_dout'right) & sv_din(sv_din'left);
                        end if;
 
-        when stop   => par   <= s_par;
-                       valid <= '1';
+        when stop   => par_o   <= s_par;
+                       valid_o <= '1';
                        gen_dout : case g_parity is
-                         when none   => dout <= sv_dout(sv_dout'left downto sv_dout'right + 1);
-                         when others => dout <= sv_dout(sv_dout'left downto sv_dout'right + 2);
+                         when none   => data_o <= sv_dout(sv_dout'left downto sv_dout'right + 1);
+                         when others => data_o <= sv_dout(sv_dout'left downto sv_dout'right + 2);
                        end case gen_dout;
 
         when others => null;
@@ -160,11 +155,11 @@ begin
   -- Those 'Counters' build the Time-Base for our State-Machine. {{{
   baud_decrementer : entity uart_lib.decrementer
     generic map (g_length => sv_din_baud'length)
-    port map (clk => clk, rst => rst, ena => s_enable_baud, load => s_load_baud, din => sv_din_baud, dec => s_baud);
+    port map (clk => clk_i, rst => rst_i, ena => s_enable_baud, load => s_load_baud, din => sv_din_baud, dec => s_baud);
 
   read_decrementer : entity uart_lib.decrementer
     generic map (g_length => sv_din_read'length)
-    port map (clk => clk, rst => rst, ena => s_enable_read, load => s_load_read, din => sv_din_read, dec => s_read);
+    port map (clk => clk_i, rst => rst_i, ena => s_enable_read, load => s_load_read, din => sv_din_read, dec => s_read);
   -- }}}
 
 end architecture dec;

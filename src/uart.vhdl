@@ -29,12 +29,12 @@ begin
                 , g_bits_per_second => g_bits_per_second
                 , g_parity          => g_parity
                 )
-    port map ( clk   => clk
-             , rst   => rst
-             , din   => rx
-             , dout  => dout
-             , par   => par
-             , valid => valid
+    port map ( clk_i   => clk
+             , rst_i   => rst
+             , rx_i    => rx
+             , data_o  => dout
+             , par_o   => par
+             , valid_o => valid
             );
 end rtl;
 

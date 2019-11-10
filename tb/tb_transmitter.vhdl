@@ -45,22 +45,29 @@ end entity tb_transmitter;
 
 architecture bench of tb_transmitter is
 
-  constant c_parity           : t_parity                                     :=           decode_parity(encoded_parity);
-  constant c_data_bits        : positive                                     :=       positive'value(encoded_data_bits);
-  constant c_ns_clock_period  : positive                                     := positive'value(encoded_ns_clock_period);
-  constant c_bits_per_second  : positive                                     := positive'value(encoded_bits_per_second);
-  constant c_duration         : time                                         :=        (10**9/c_bits_per_second) * 1 ns;
+  constant c_parity                 : t_parity                                     :=           decode_parity(encoded_parity);
+  constant c_data_bits              : positive                                     :=       positive'value(encoded_data_bits);
+  constant c_ns_clock_period        : positive                                     := positive'value(encoded_ns_clock_period);
+  constant c_bits_per_second        : positive                                     := positive'value(encoded_bits_per_second);
+  constant c_duration               : time                                         :=        (10**9/c_bits_per_second) * 1 ns;
 
-  signal st_act               : t_act                                        :=                                    idle;
-  signal si_data, si_value    : integer                                      :=                      2**c_data_bits - 1;
-  signal s_rst, s_dout        : std_ulogic                                   :=                                     '1';
-  signal s_clk, s_ena, s_busy : std_ulogic                                   :=                                     '0';
-  signal sv_din               : std_ulogic_vector (c_data_bits - 1 downto 0) :=                         (others => '0');
+  signal st_act                     : t_act                                        :=                                    idle;
+  signal sb_enable_tx               : boolean                                      :=                                   false;
+  signal si_data, si_value          : integer                                      :=                      2**c_data_bits - 1;
+  signal s_rst, s_dout              : std_ulogic                                   :=                                     '1';
+  signal s_clk, s_ena, s_busy       : std_ulogic                                   :=                                     '0';
+  signal sv_din                     : std_ulogic_vector (c_data_bits - 1 downto 0) :=                         (others => '0');
 
-  shared variable rand_gen    : RandomPType;
+  shared variable rand_gen          : RandomPType;
 begin
   -- Here we generate the System-Clock for this Test-Bench, guarded by another STOP-Condition.
   s_clk <= not s_clk after (c_ns_clock_period/2) * 1 ns;
+  -- This is our concurent transmission procedure, it is called each time we write to it's inputs (like in the main process).
+  -- Whilst using a guarded block statement, provides control over the initial behaviour.
+  block_rx : block (sb_enable_tx = true) is
+  begin
+    do_rx(c_duration, c_data_bits, c_parity, s_dout, st_act, si_data);
+  end block block_rx;
   -- Here we schedule our testcases and let 'VUnit' manage them.
   main : process is
   begin
@@ -68,17 +75,22 @@ begin
     rand_gen.initseed(now/1 ns);
     test_runner_setup(runner, runner_cfg);
     show(get_logger(default_checker), display_handler, pass);
+    -- Enable Transmission block.
+    sb_enable_tx <= true;
+    -- reset reveiver unit
+    do_rst(c_ns_clock_period, s_rst);
 
-    if run("start") then
-      do_rst(c_ns_clock_period, s_rst);
+    if run("transfer.single") then
+      si_value <= rand_gen.uniform(0, 2**c_data_bits - 1);
       wait for c_duration;
       wait until s_clk'event and s_clk = '1';
       s_ena <= '1';
-      sv_din <= std_ulogic_vector(to_unsigned(42, 8));
+      sv_din <= std_ulogic_vector(to_unsigned(si_value, sv_din'length));
       wait until s_clk'event and s_clk = '1';
       s_ena <= '0';
-      sv_din <= std_ulogic_vector(to_unsigned(0, 8));
-      wait for 16 * c_duration;
+      sv_din <= std_ulogic_vector(to_unsigned(0, sv_din'length));
+      wait until s_busy = '0';
+      check_equal(si_value, si_data, "Compairing sent and received data.");
 
     end if;
 
@@ -91,6 +103,6 @@ begin
 
   dut : entity uart_lib.transmitter
     generic map (g_data_bits => c_data_bits, g_ns_clock_period => c_ns_clock_period, g_bits_per_second => c_bits_per_second, g_parity => c_parity)
-    port map (clk => s_clk, rst => s_rst, ena => s_ena, din => sv_din, busy => s_busy, dout => s_dout);
+    port map (clk_i => s_clk, rst_i => s_rst, ena_i => s_ena, data_i => sv_din, busy_o => s_busy, tx_o => s_dout);
 end bench;
 

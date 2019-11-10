@@ -21,10 +21,18 @@ package receiver_utils is
                   ; signal   act    : out t_act
                   ; signal   dout   : out integer
                  );
+  -- 'do_rx' reads a single byte like an UART on dout.
+  procedure do_rx ( constant delay  : in  time
+                  ; constant bitnum : in  integer
+                  ; constant par    : in  t_parity
+                  ; signal   rx     : in  std_ulogic
+                  ; signal   act    : out t_act
+                  ; signal   dout   : out integer
+                 );
   -- 'decode_parity' derives from a VUnit String the needed 't_parity' type.
-  function decode_parity (parity : string) return t_parity;
+  function decode_parity (p : string) return t_parity;
   -- 'check_parity' returns true when the parity of 'data' is like defined through 't_parity'.
-  function check_parity (constant parity : t_parity; constant data : std_ulogic_vector) return boolean;
+  function check_parity (constant p : t_parity; constant value : std_ulogic_vector) return boolean;
 end package receiver_utils;
 
 library ieee;
@@ -79,28 +87,62 @@ package body receiver_utils is
     act <= idle;
   end procedure do_tx;
 
-  function decode_parity (parity : string) return t_parity is
+
+  procedure do_rx ( constant delay  : in  time
+                  ; constant bitnum : in  integer
+                  ; constant par    : in  t_parity
+                  ; signal   rx     : in  std_ulogic
+                  ; signal   act    : out t_act
+                  ; signal   dout   : out integer
+                  )
+  is
+    variable sv_value : std_ulogic_vector (bitnum - 1 downto 0);
   begin
-    if    parity =  "odd" then return  odd;
-    elsif parity = "even" then return even;
+    wait until rx'event and rx = '0';
+    act <= start;
+    wait for delay;
+    act <= data;
+    wait for 0.5 * delay;
+    for i in sv_value'range loop
+      sv_value(i) := rx;
+      wait for delay;
+    end loop;
+    -- TODO: assert on parity
+    check : case par is
+      when odd    => act <= parity;
+                     wait for delay;
+      when even   => act <= parity;
+                     wait for delay;
+      when others => null;
+    end case check;
+    act <= stop;
+    dout <= to_integer(unsigned(sv_value));
+    wait for 1.5 * delay;
+    act <= idle;
+  end procedure do_rx;
+
+  function decode_parity (p : string) return t_parity is
+  begin
+    if    p =  "odd" then return  odd;
+    elsif p = "even" then return even;
     else                       return none;
     end if;
   end function decode_parity;
 
-  function check_parity (constant parity : t_parity; constant data : std_ulogic_vector) return boolean is
+  function check_parity (constant p : t_parity; constant value : std_ulogic_vector) return boolean is
     variable sum : natural := 0;
   begin
-    if parity = none then
+    if p = none then
       return true;
     else
-      for i in data'range loop
-       if data(i) = '1' then
+      for i in value'range loop
+       if value(i) = '1' then
           sum := sum + 1;
         end if;
       end loop;
     end if;
 
-    case parity is
+    case p is
       when odd    => return sum mod 2 = 1;
       when even   => return sum mod 2 = 0;
       when others => return false;

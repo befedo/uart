@@ -77,27 +77,24 @@ begin
     show(get_logger(default_checker), display_handler, pass);
     -- Enable Transmission block.
     sb_enable_tx <= true;
+    -- reset reveiver unit
+    do_rst(c_ns_clock_period, s_rst);
 
     if run("check.valid.on.start") then
-      do_rst(c_ns_clock_period, s_rst);
       wait until s_valid'event for 20 * c_ns_clock_period * 1 ns;
       check(s_valid = '0', "Sanity check for 'valid' on startup.");
     elsif run("check.par.on.start") then
-      do_rst(c_ns_clock_period, s_rst);
       wait until s_par'event for 20 * c_ns_clock_period * 1 ns;
       check(s_par = '0' or s_par = '-', "Sanity check for 'par' on startup.");
     elsif run("check.dout.on.start") then
-      do_rst(c_ns_clock_period, s_rst);
       wait until sv_dout'event for 20 * c_ns_clock_period * 1 ns;
       check_equal(sv_dout, 0, "Sanity check for 'dout' on startup.");
     elsif run("transfer.single") then
-      do_rst(c_ns_clock_period, s_rst);
       wait until s_valid'event and s_valid = '1';
       check_equal(sv_dout, si_data, "Compairing sent and received data.");
       check(s_par /= '1', "Parity check for '" & to_string(si_data) & "'.");
       wait for c_duration;
     elsif run("transfer.multi") then
-      do_rst(c_ns_clock_period, s_rst);
       for i in 1 to 2**(c_data_bits - 1) loop
         si_value <= rand_gen.uniform(0, 2**c_data_bits - 1);
         wait until s_valid'event and s_valid = '1';
@@ -117,6 +114,6 @@ begin
 
   dut : entity uart_lib.receiver (dec)
     generic map (g_data_bits => c_data_bits, g_ns_clock_period => c_ns_clock_period, g_bits_per_second => c_bits_per_second, g_parity => c_parity)
-    port map (clk => s_clk, rst => s_rst, din => s_din, dout => sv_dout, par => s_par, valid => s_valid);
+    port map (clk_i => s_clk, rst_i => s_rst, rx_i => s_din, data_o => sv_dout, par_o => s_par, valid_o => s_valid);
 end bench;
 
