@@ -2,6 +2,8 @@
 
 UART implementation in VHDL.
 
+![Full Transaction](doc/transaction_fifo_full.png)
+
 ## Description
 
 This Repository contains a VHDL implementation of an *U*niversal *A*synchronous *R*eceiver/*T*ransmitter.
